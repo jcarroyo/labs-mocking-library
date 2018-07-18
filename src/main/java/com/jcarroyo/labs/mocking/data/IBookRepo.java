@@ -7,4 +7,5 @@ public interface IBookRepo {
     public boolean lookForDuplicated(String flatName) throws Exception;
     public ArrayList<Book> getAllBooks() throws Exception;
     public void closeConnection();
+    public void auditAction();
 }

@@ -9,6 +9,10 @@ import java.util.ArrayList;
 public class BookLogic {
     IBookRepo bookRepo;
 
+    public BookLogic(IBookRepo bookr){
+        this.bookRepo = bookr;
+    }
+
     public BookLogic() throws Exception{
         bookRepo = new BookRepo();
     }
@@ -46,6 +50,7 @@ public class BookLogic {
 
     public void printBooks() throws Exception{
         ArrayList<Book> books = bookRepo.getAllBooks();
+        bookRepo.auditAction();
         if(books == null){
             throw new LibraryEmptyException();
         }
