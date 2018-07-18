@@ -1,8 +1,9 @@
 package com.jcarroyo.labs.mocking.data;
 
 import java.sql.*;
+import java.util.ArrayList;
 
-public class BookRepo {
+public class BookRepo implements IBookRepo {
     private String dbUrl = "jdbc:derby:Library;create=true;";
     private String table = "Book";
 
@@ -19,7 +20,75 @@ public class BookRepo {
         }
     }
 
-    public void close() throws Exception{
+    private void createConnection() throws Exception
+    {
+        Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
+        System.setProperty("derby.system.home", "src/main/resources/.derby");
+        conn = DriverManager.getConnection(dbUrl);
+    }
+
+    private void initialize() throws Exception{
+        Statement st = conn.createStatement();
+        try{
+            st.executeUpdate("DROP TABLE BOOK");
+        }
+        catch (Exception ex){
+
+        }
+        st.executeUpdate("CREATE TABLE BOOK(ID INTEGER NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY,"
+                + "NAME VARCHAR(30), FLATNAME VARCHAR(30), PRICE FLOAT)");
+    }
+
+    public boolean lookForDuplicated(String flatName) throws Exception{
+        boolean duplicated = false;
+        PreparedStatement stm = conn.prepareStatement(
+                "SELECT * FROM BOOK WHERE FLATNAME LIKE ?"
+        );
+        stm.setString(1, flatName);
+        ResultSet resultSet = stm.executeQuery();
+        while(resultSet.next()){
+            duplicated = true;
+        }
+        stm.close();
+        return duplicated;
+    }
+
+    public void insertBook(String bookName, String flatName, float price) throws Exception{
+        PreparedStatement stm = conn.prepareStatement(
+                "INSERT INTO BOOK(NAME, FLATNAME, PRICE) VALUES (?, ?, ?)"
+        );
+        stm.setString(1, bookName);
+        stm.setString(2, flatName);
+        stm.setFloat(3, price);
+        stm.executeUpdate();
+    }
+
+    public ArrayList<Book> getAllBooks() throws Exception{
+        ArrayList<Book> books = null;
+
+        String query = "SELECT ID, FLATNAME, PRICE FROM BOOK";
+        Statement stm = conn.createStatement();
+        ResultSet resultSet = stm.executeQuery(query);
+        while(resultSet.next()){
+            int id = resultSet.getInt("ID");
+            String flatName = resultSet.getString("FLATNAME");
+            float price = resultSet.getFloat("PRICE");
+
+            if(books == null){
+                books = new ArrayList<Book>();
+            }
+            Book book = new Book();
+            book.setId(id);
+            book.setFlatName(flatName);
+            book.setPrice(price);
+            books.add(book);
+        }
+        stm.close();
+
+        return books;
+    }
+
+    public void closeConnection(){
         try{
             DriverManager.getConnection("jdbc:derby:;shutdown=true");
         }
@@ -32,44 +101,6 @@ public class BookRepo {
             throw ex;
         }
     }
-
-    private void createConnection() throws Exception
-    {
-        System.setProperty("derby.system.home", "src/main/resources/.derby");
-        conn = DriverManager.getConnection(dbUrl);
-    }
-
-    private void initialize() throws Exception{
-        Statement st = conn.createStatement();
-        st.executeUpdate("CREATE TABLE BOOK(ID INTEGER NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY,"
-                + "NAME VARCHAR(30), PRICE INT)");
-        st.executeUpdate("INSERT INTO BOOK(NAME, PRICE) VALUES('Libro1', 40.20)");
-        st.executeUpdate("INSERT INTO BOOK(NAME, PRICE) VALUES('Libro2', 50.30)");
-        st.executeUpdate("INSERT INTO BOOK(NAME, PRICE) VALUES('Libro3', 20.99)");
-        st.executeUpdate("INSERT INTO BOOK(NAME, PRICE) VALUES('Libro4', 11.46)");
-    }
-
-    public void insertBook(String bookName, long price) throws Exception{
-        PreparedStatement stm = conn.prepareStatement(
-        "INSERT INTO BOOK(NAME, PRICE) VALUES (?, ?)"
-        );
-        stm.setString(1, bookName);
-        stm.setLong(2, price);
-        stm.executeUpdate();
-    }
-
-    public void printBooks() throws Exception{
-        String query = "SELECT ID, NAME, PRICE FROM BOOK";
-        Statement stm = conn.createStatement();
-        ResultSet resultSet = stm.executeQuery(query);
-        while(resultSet.next()){
-            int id = resultSet.getInt("ID");
-            String name = resultSet.getString("NAME");
-            long price = resultSet.getLong("PRICE");
-
-            System.out.println("ID:" + Integer.toString(id) + "\t" +
-            "BOOK:" + name + "\t" + "PRICE:" + Long.toString(price));
-        }
-        stm.close();
-    }
 }
+
+
