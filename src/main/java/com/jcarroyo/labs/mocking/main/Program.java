@@ -12,6 +12,8 @@ public class Program {
             bookLogic.closeLibraryRepo();
         }
         catch(Exception ex){
+
+            //eee
             ex.printStackTrace();
         }
     }

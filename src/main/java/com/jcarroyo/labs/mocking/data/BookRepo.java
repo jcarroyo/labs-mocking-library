@@ -2,6 +2,7 @@ package com.jcarroyo.labs.mocking.data;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.logging.*;
 
 public class BookRepo implements IBookRepo {
     private String dbUrl = "jdbc:derby:Library;create=true;";
@@ -9,6 +10,8 @@ public class BookRepo implements IBookRepo {
 
     private Connection conn = null;
     private Statement stmt = null;
+
+    private static final Logger LOGGER = Logger.getLogger( "BookRepo" );
 
     public BookRepo() throws Exception{
         try{
@@ -33,7 +36,7 @@ public class BookRepo implements IBookRepo {
             st.executeUpdate("DROP TABLE BOOK");
         }
         catch (Exception ex){
-
+            LOGGER.log( Level.SEVERE, ex.toString(), ex );
         }
         st.executeUpdate("CREATE TABLE BOOK(ID INTEGER NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY,"
                 + "NAME VARCHAR(30), FLATNAME VARCHAR(30), PRICE FLOAT)");
