@@ -98,4 +98,6 @@ public class BooksTest {
             Assertions.fail("Fallo", ex);
         }
     }
+
+    //IMPLEMENTAR CASOS DE PRUEBA PARA bookLogic.getBookByName
 }

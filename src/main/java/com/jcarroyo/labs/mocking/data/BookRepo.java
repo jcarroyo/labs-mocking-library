@@ -107,6 +107,11 @@ public class BookRepo implements IBookRepo {
     public void auditAction() {
         throw new NotImplementedException();
     }
+
+    public Book findBook(String flatName) throws Exception {
+        //IMPLEMENTAR ESTE METODO
+        throw new NotImplementedException();
+    }
 }
 
 

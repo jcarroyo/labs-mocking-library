@@ -8,4 +8,5 @@ public interface IBookRepo {
     public ArrayList<Book> getAllBooks() throws Exception;
     public void closeConnection();
     public void auditAction();
+    public Book findBook(String bookName) throws Exception;
 }

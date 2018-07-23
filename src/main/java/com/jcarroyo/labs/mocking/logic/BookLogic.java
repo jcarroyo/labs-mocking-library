@@ -3,6 +3,7 @@ package com.jcarroyo.labs.mocking.logic;
 import com.jcarroyo.labs.mocking.data.Book;
 import com.jcarroyo.labs.mocking.data.BookRepo;
 import com.jcarroyo.labs.mocking.data.IBookRepo;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 
@@ -67,6 +68,12 @@ public class BookLogic {
 
     public void closeLibraryRepo(){
         bookRepo.closeConnection();
+    }
+
+    public void getBookByName(String bookName){
+        //IMPLEMENTAR ESTE METODO
+        //bookRepo.findBook(flatName);
+        throw new NotImplementedException();
     }
 
     public class DuplicatedBookException extends Exception
