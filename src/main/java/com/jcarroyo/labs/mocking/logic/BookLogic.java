@@ -3,11 +3,16 @@ package com.jcarroyo.labs.mocking.logic;
 import com.jcarroyo.labs.mocking.data.Book;
 import com.jcarroyo.labs.mocking.data.BookRepo;
 import com.jcarroyo.labs.mocking.data.IBookRepo;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 
 public class BookLogic {
     IBookRepo bookRepo;
+
+    public BookLogic(IBookRepo bookr){
+        this.bookRepo = bookr;
+    }
 
     public BookLogic() throws Exception{
         bookRepo = new BookRepo();
@@ -46,6 +51,7 @@ public class BookLogic {
 
     public void printBooks() throws Exception{
         ArrayList<Book> books = bookRepo.getAllBooks();
+        bookRepo.auditAction();
         if(books == null){
             throw new LibraryEmptyException();
         }
@@ -62,6 +68,12 @@ public class BookLogic {
 
     public void closeLibraryRepo(){
         bookRepo.closeConnection();
+    }
+
+    public void getBookByName(String bookName){
+        //IMPLEMENTAR ESTE METODO
+        //bookRepo.findBook(flatName);
+        throw new NotImplementedException();
     }
 
     public class DuplicatedBookException extends Exception

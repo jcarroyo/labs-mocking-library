@@ -1,5 +1,7 @@
 package com.jcarroyo.labs.mocking.data;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.logging.*;
@@ -103,6 +105,15 @@ public class BookRepo implements IBookRepo {
         catch (Exception ex){
             throw ex;
         }
+    }
+
+    public void auditAction() {
+        throw new NotImplementedException();
+    }
+
+    public Book findBook(String flatName) throws Exception {
+        //IMPLEMENTAR ESTE METODO
+        throw new NotImplementedException();
     }
 }
 
